@@ -29,19 +29,21 @@ Table of Contents
 -----------------
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 1
 
-   quickstart
    overview/summary
-   tutorial
-   tutorial_distributed
-   documentation
-   references
+   install/howto
+   tutorial/index
+   tutorial_distributed/index
+   method
+   fv_convert
+   cli/index
+   client_api/index
+   tips/index
+   faqs/faq
+   developers/index
    jubaql/jubaql
-   howtocontribute
-   cla
-   misc
-   aboutus
+   about/index
 
 Other Resources
 ===============

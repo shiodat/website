@@ -1,15 +1,15 @@
-Methods
+アルゴリズム
 =======
 
-このページでは、各サーバで使用されているアルゴリズムの詳細について説明する。
+このページでは、Jubatusで使用されているアルゴリズムの詳細について説明する。
 
 .. In this page, we discuss the details of algorithms used in each server. This page is currently written in Japanese; see References section for the list of references for each algorithms.
 
 Classifier & Regression
-=======================
+--------
 
 Overview
---------
+~~~~~~~~
 
 回帰問題は，入力 :math:`x` に対応する特徴ベクトル :math:`\phi(x) \in R^m` に対して，実数値の出力 :math:`y \in R` を当てる問題である．
 今回実装したのは，線形回帰モデルである．
@@ -20,7 +20,7 @@ Overview
 この方法はバッチ処理になるため，今回の調査ではオンライン学習させる方法を利用した．
 
 Passive Aggressive
-------------------
+~~~~~~~~~~~~~~~~~~
 
 Passive Aggressive (PA) [Crammer03a]_ [Crammer03b]_ [Crammer06]_ は，Support Vector Regression (SVR) のオンライン版であり，同名の分類器を回帰問題に適用したアルゴリズムである．
 PA は， (1) 現在の学習データが与えられた許容範囲 :math:`epsilon` 以下で予測する． (2) 分類問題の PA 同様，できる限り現在のパラメータと近い点を選ぶ，という二つの条件を満たすパラメータに更新する．
@@ -36,7 +36,7 @@ PA は， (1) 現在の学習データが与えられた許容範囲 :math:`epsi
 実際の更新幅は， :math:`\{\mathrm{sign}(y - w^Tx) \min(C \sigma, \ell) / |x|^2\} x` となる．
 
 Iterative Parameter Mixture
----------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 分類問題同様，重みベクトルは Iterative Parameter Mixture [McDonald10]_ [Mann09]_ で混ぜ合わせる．
 これは，各マシンが単独で学習アルゴリズムを動かし，一定時間，あるいは決められた条件ごとに，すべてのマシンの重みを集めて，それらの平均を計算する．
@@ -45,7 +45,7 @@ Iterative Parameter Mixture
 もともと分類問題向けのモデル共有方法であるが，線形回帰モデルではモデルパラメータが同じ形をしているので，同様に分散学習させることができる可能性が高い．
 
 References
-----------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 **PA(PA, PA1, PA2): Passive Aggressive**
   .. [Crammer03a] Koby Crammer, Ofer Dekel, Shai Shalev-Shwartz and Yoram Singer, **Online Passive-Aggressive Algorithms**, *Proceedings of the Sixteenth Annual Conference on Neural Information Processing Systems (NIPS)*, 2003.
@@ -73,10 +73,10 @@ References
 
 
 Recommender
-===========
+-----------
 
 Overview
---------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 レコメンダは，類似するデータを推薦したり，データ中の未知の属性を推定することによって推薦するためのモジュールである．
 
@@ -84,12 +84,12 @@ Overview
 未知属性の推薦操作であるcomplete_rowは，行をクエリとし，その行の属性値を類似する行の情報を用いて推定する．
 
 Data Representation
--------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 データはrowとcolumnからなる行列で表現される．各データはuniqueなidで紐付けられたrowデータで表される．各rowデータは，column名とそれに紐付く浮動小数点値からなる．但し，全てのcolumn値は指定されていなくても良い．row名，column名はあらかじめ全て指定されていなくても良い．
 
 Similarity Calculation
-----------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 rowデータはベクトルで表現され，ベクトル間の類似度はcos類似度，またはJaccard係数で計算される．
 
@@ -100,15 +100,15 @@ Jaccard係数は :math:`Jac(x, y) = |\cap(x, y)| / |\cup(x, y)|` として計算
 なお，登録されていない空の値は :math:`0` として扱われる．
 
 Algorithms
-----------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 inverted_index
-~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^
 
 転置インデクスを利用したレコメンダである．転置インデクスは特徴ID毎にそれが発火した特徴データ集合を格納する．これにより類似度に影響がある特徴ID，データだけを列挙できるようになるので，クエリが疎である場合に高速化をはかることができる．
 
 lsh
-~~~
+^^^^^^^^^^^^^^
 
 局所近傍ハッシュ (Locality Sensitive Hash, LSH) を利用したレコメンダである．データ毎にそのデータを表すビット列を計算して，ビット列を格納する．データ間のcos類似度は，ビット間のハミング距離から求められる類似度によって計算できる．
 
@@ -118,7 +118,7 @@ lsh
 これにより，任意のベクトル間のcos類似度計算は，それらのベクトルから生成されたビットベクトル間のビット一致数により近似できる．元々のベクトルに比べ，ビットベクトルは小さくまた固定長であるため通信容量を大幅に削減することができる他，類似度計算を高速に実現することができる．
 
 minhash
-~~~~~~~
+^^^^^^^^^^^^^^
 
 MinHashを利用したレコメンダである．各データ毎にそのデータを表すビット列を計算して，ビット列を格納する．データ間のJaccard係数は，ビット間のハミング距離から求められる類似度によって計算できる．
 
@@ -129,7 +129,7 @@ MinHashを利用したレコメンダである．各データ毎にそのデー�
 次に各要素が正の実数値を持つ場合に拡張する :math:`\cap(x, y) = \sum_i \min(x_i, y_i), \cup(x, y) = \sum_i \max(x_i, y_i)` と定義する．この時，各要素がその値の個数だけ存在するようなハッシュ関数を利用する必要がある．カラム名のハッシュ値を :math:`h` とした時， :math:`-\log(h) / x_i` をこの要素のハッシュ値とする．このハッシュ値で計算された場合，minhash値は一致する．
 
 euclid_lsh
-~~~~~~~~~~
+^^^^^^^^^^^^^^
 
 ユークリッド距離のための局所近傍ハッシュを利用したレコメンダである．複数テーブルを用いた効率的な探索と，cos類似度の局所近傍ハッシュとユークリッドノルム値を用いたリランキングによってユークリッド空間における近傍探索を実現する．
 
@@ -140,7 +140,7 @@ euclid_lsh
 ユークリッド距離は類似度ではなく距離であり，値が小さくなるほど近いという意味になる．対応する類似度に標準的なものがないため，Jubatusではユークリッド距離に :math:`-1` を掛けたものを類似度として用いる．
 
 References
-----------
+~~~~~~~~~~
 
 **minhash: b-Bit Minwise Hash**
   .. [Ping2010] Ping Li, Arnd Christian Konig, **b-Bit Minwise Hashing**, *WWW*, 2010
@@ -151,20 +151,20 @@ References
   .. [Lv2007] Qin Lv, William Josephson, Zhe Wang, Moses Charikar, Kai Li, **Multi-Probe LSH: Efficient Indexing for High-Dimensional Similarity Search**, *VLDB*, 2007.
 
 Storage
--------
+~~~~~~~
 
 inverted_index_storage
-~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^
 
 転置インデクスを格納するインデクスである．inverted_indexで利用される．文字列生成のオーバーヘッドを削減するために内部では，カラムID文字列は整数IDに内部で変換され保存される．
 
 bit_index_stroage
-~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^
 
 ビット列からなるデータ集合を格納するインデクスである．lshとmin_hashで利用される．ビット間の類似度計算部分はビット操作によって実現され高速である．
 
 Data Distribution
------------------
+~~~~~~~~~~~~~~~~~
 
 recommenderでは全ての情報をストレージに格納する．
 
@@ -179,19 +179,19 @@ mix操作時には各サーバーからdiffをあつめ,それらを合わせた
 inverted_index_storageではdiff, mixedは転置ファイルとなっており，bit_index_storageでは各row毎にbit列を保持する.
 
 Anomaly
-=======
+-------
 
 References
-----------
+~~~~~~~~~~
 
 **Local Outlier Factor**
   .. [Breunig2000] Markus M. Breunig, Hans-Peter Kriegel, Raymond T. Ng, Jörg Sander, **LOF: Identifying Density-Based Local Outliers**, SIGMOD, 2000.
 
 Nearest Neighbor
-================
+----------------
 
 Overview
---------
+~~~~~~~~
 
 近傍探索は，登録されたデータ集合の中から，クエリとして与えられたデータに類似したものを高速に取り出す問題である．
 この問題はレコメンダを用いても解くことができるが，近傍探索のみが目的ならば，登録時のもともとのデータ表現など推薦に必要な一部の情報を保存する必要がない．
@@ -201,27 +201,27 @@ Overview
 特に近傍探索のアルゴリズムはpush/pull型のMIXをサポートしている．
 
 Data Structure
---------------
+~~~~~~~~
 
 近傍探索のアルゴリズムはすべてハッシュ法をベースにしている．
 カラム指向のデータ構造を用いており，各アイテムごとにバージョン情報を保持している．
 push/pull型のMIXにおいて，アイテム単位のバージョン情報を用いてモデルの差分を生成してプロセス間で交換する。
 
 Algorithm
----------
+~~~~~~~~
 
 lsh
-~~~
+^^^^^^^^^^
 
 コサイン類似度を近似する局所近傍ハッシュ(Locality Sensitive Hash, LSH)を利用した近傍探索器である．アルゴリズムの詳細はレコメンダのlshと同様である．
 
 minhash
-~~~~~~~
+^^^^^^^^^^
 
 b-Bit Minwise Hashを用いた近傍探索記である。アルゴリズムの詳細はレコメンダのminhashと同様である。
 
 euclid_lsh
-~~~~~~~~~~
+^^^^^^^^^^
 
 ユークリッド距離について類似するアイテムを取得するための近傍探索器である．近傍探索器のeuclid_lshはレコメンダのものとは大きく実装が異なる．
 
@@ -233,10 +233,10 @@ euclid_lsh
 nearest_neighborにおけるeuclid_lshは，各データごとにLSHのハッシュ値とノルム値を保存する．クエリ時には全ハッシュ値・ノルム値を走査して上式に従ってユークリッド距離を計算し，距離が小さいものから指定した個数だけ取得する．
 
 Clustering
-==========
+----------
 
 Overview
---------
+~~~~~~~~
 
 クラスタリング問題とはデータ集合を類似したデータの部分集合（クラスタ）に分割する問題である．
 Jubatusではコアセットと呼ばれる技術を用いてオンライン分散のクラスタリングを実現している．
@@ -247,7 +247,7 @@ Jubatusではコアセットと呼ばれる技術を用いてオンライン分�
 Jubatusではk-平均法と混合ガウスモデル(GMM)の二種類のクラスタリング手法をサポートしている．
 
 Coreset on Jubatus
-------------------
+~~~~~~~~~~~~~~~~~~
 
 コアセットは，データ集合を要約するような部分集合である．クラスタリングに用いるコアセット法では，小さな部分集合に対するクラスタリングがもとのデータ全集合に対するクラスタリングを近似するように部分集合（コアセット）を選ぶ．
 コアセットを用いたクラスタリングについては， [Feldman2011b]_ において混合ガウスモデルへの適用が提案されており，さらに [Feldman2011a]_ においてより広い範囲のクラスタリング問題に適用できる理論が構築されている．
@@ -264,7 +264,7 @@ Jubatusのコアセットクラスタリングでは，さらにコアセット�
 コアセットのMIXでは単純にプロセス間でコアセットを交換する．他プロセスから受け取ったコアセットは上記のオンライン更新には用いられず，後述のクラスタリングにのみ利用される．
 
 Clustering algorithms
----------------------
+~~~~~~~~~~~~~~~~~~~~~
 
 コアセットを圧縮するタイミングで，圧縮後のコアセットを用いてクラスタリングを実行する．
 クラスタリングの際には，既存のコアセットや他プロセスからMIXで受け取ったコアセットも用いる．
@@ -274,7 +274,7 @@ Jubatusではこうして得られたクラスタリング結果（クラスタ�
 k-平均法はこれを参考にしながら， [Feldman2011a]_ で構築されたより一般的な理論をk-平均法に適用したものを実装している．
 
 Reference
----------
+~~~~~~~~~
 
 .. [Feldman2011a] D. Feldman, M. Langberg. "A Unified Framework for Approximating and Clustering Data." STOC '11: Proceedings of the 43rd annual ACM Symposium on Theory of Computing, pp. 569-578.
 .. [Feldman2011b] D. Feldman, M. Faulkner, A. Krause. "Scalable Training of Mixture Models via Coresets." Advances in Neural Information Processing Systems 24, 2011.

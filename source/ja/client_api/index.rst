@@ -1,4 +1,4 @@
-Client API
+Jubatus Client API
 ==========
 
 各 Jubatus サーバは、クライアント向けに MessagePack-RPC インターフェイスを持つ。

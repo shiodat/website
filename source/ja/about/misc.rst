@@ -1,8 +1,5 @@
-その他の情報
-=============
-
 発表
-------------
+--------------------
 
 `English publicatoin list is available here <http://jubat.us/en/misc.html>`__
 
@@ -72,7 +69,7 @@
   - `Press Release Slides (in Japanese) <http://www.slideshare.net/JubatusOfficial/jubatus-pressrelease>`_
 
 これまでの貢献
------------------------------
+--------------------
 
 - `MacPorts <http://d.hatena.ne.jp/hjym_u/20111107/1320647557>`_
 
